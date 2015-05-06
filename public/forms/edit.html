@@ -1,0 +1,26 @@
+<h1>{{ $parent.settings.pageTitle }}</h1>
+
+<p ng-show="$parent.settings.success" class="alert alert-success">{{$parent.settings.success}}</p>
+
+<div class="required-field-block">
+	<input type="text" placeholder="Categoria" ng-model="Oracion.categoria" class="form-control">
+	<div class="required-icon">
+		<div class="text">*</div>
+	</div>
+</div>
+
+<div class="required-field-block">
+	<input type="text" placeholder="Titulo" ng-model="Oracion.titulo" class="form-control">
+	<div class="required-icon">
+		<div class="text">*</div>
+	</div>
+</div>
+
+<div class="required-field-block">
+	<textarea rows="6" placeholder="Categoria" ng-model="Oracion.oracion" class="form-control"></textarea>
+	<div class="required-icon">
+		<div class="text">*</div>
+	</div>
+</div>
+
+<button class="btn btn-primary" ng-click="submit($parent.Oracion)">{{ $parent.settings.action }}</button>
