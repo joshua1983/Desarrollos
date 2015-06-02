@@ -1,80 +1,147 @@
-var app = angular.module('oracionesApp',['ngRoute', 'ngResource'])
+angular.module('inventarioApp',['ngRoute', 'ngResource','appConf', 'inventario'])
 
 .config(['$routeProvider', function($routeProvider){
-	$routeProvider.when('/home',{
-		templateUrl: 'templates/list.html',
+	$routeProvider.when('/homeApp',{
+		templateUrl: 'templates/listApp.html',
 		controller: 'HomeCtrl'
 	})
-	.when('/edit/:id',{
-		templateUrl: 'templates/editar.html',
+	.when('/editApp/:id',{
+		templateUrl: 'templates/editarApp.html',
 		controller: 'EditCtrl'
 	})
-	.when('/create',{
-		templateUrl: 'templates/nuevo.html',
+	.when('/createApp',{
+		templateUrl: 'templates/nuevoApp.html',
 		controller: 'CreateCtrl'
 	})
-	.otherwise({redirectTo: '/home'});
+	.when('/',{
+		redirectTo: '/homeApp'
+	})
+	.otherwise({redirectTo: '/homeApp'});
 }])
 
-.controller('HomeCtrl',['$scope','Oraciones', '$route', function($scope, Oraciones,$route){
-	Oraciones.get(function(data){
-		$scope.oraciones = data.orac;
+.controller('HomeCtrl',['$scope','InventarioApp', '$route', '$rootScope','AuthService', function($scope, InventarioApp, $route, $rootScope, AuthService){
+	InventarioApp.get(function(data){
+		$scope.InventarioApp = data.apps;
+
 	});
+
+	$scope.isAdmin = function(){
+		if (AuthService.esAdmin() == null ) return false;
+		return AuthService.esAdmin();
+	}
 
 	$scope.remove= function(id){
-		Oraciones.delete({id: id}).$promise.then(function(data){
+		InventarioApp.delete({id: id}).$promise.then(function(data){
 			if (data.msg){
-				$route.reload();
+				$route.reload(); 
 			}
 		});
 	}
+
+
 }])
-.controller('EditCtrl',['$scope','Oraciones', '$routeParams', function($scope, Oraciones, $routeParams){
+.controller('EditCtrl',['$scope','InventarioApp' ,'Configuraciones','ModuloFact','IngenieroFact', '$routeParams', '$route',
+ function($scope, InventarioApp, Configuraciones,ModuloFact,IngenieroFact, $routeParams, $route){
 	$scope.settings = {
-		pageTitle: "Editar Oracion",
-		action: "Guardar"
+		pageTitle: "Editar Aplicación",
+		action: "Guardar",
+		edicion: true
 	}
 
-	var id = $routeParams.id;
-	Oraciones.get({id:id},function(data){
-		$scope.Oracion = data.oracion;
+	var idAplicacion = $routeParams.id;
+	
+	
+	InventarioApp.get({id:idAplicacion},function(data){
+		IngenieroFact.get(function(datosIng){
+			$scope.ingenieros = datosIng.ings;
+		});
+		
+		ModuloFact.get({id:idAplicacion},function(dataMods){
+			$scope.aplicacion.Modulos = dataMods.modulos;
+		});
+	
+		Configuraciones.get({id:0,idApp: idAplicacion}, function(dataConf){
+			$scope.aplicacion.Configuraciones = dataConf.config
+		});
+
+		$scope.aplicacion = data.aplicacion;
+		
+		var dba = $scope.aplicacion.dba_id;
+		var tec = $scope.aplicacion.tec_id;		
+		
+		IngenieroFact.get({id:dba},function(datosIng){
+			$scope.aplicacion.dba = datosIng.ingeniero;
+		});
+		IngenieroFact.get({id:tec},function(datosIng){
+			$scope.aplicacion.tec = datosIng.ingeniero;
+		});	
+		
 	});
 
-	$scope.submit = function(){
-		Oraciones.update({id: $scope.Oracion.id}, $scope.Oracion).$promise.then(function(data){
+	$scope.actualizarCapacidad=function(idCap){
+
+	}
+	
+	$scope.borrarConfiguracion= function(id){
+		Configuraciones.delete({id: id}).$promise.then(function(data){
 			if (data.msg){
-				angular.copy({},$scope.Oracion);
-				$scope.settings.success = "Oracion editada correctamente";
+				$route.reload(); 
+			}
+		});
+	}
+	
+	$scope.borrarModulo= function(id){
+		ModuloFact.delete({id: id}).$promise.then(function(data){
+			if (data.msg){
+				$route.reload(); 
+			}
+		});
+	}
+
+	$scope.submit = function(){
+		InventarioApp.update({id: $scope.aplicacion.id}, $scope.aplicacion).$promise.then(function(data){
+			if (data.msg){
+				//angular.copy({},$scope.aplicacion);
+				$scope.settings.success = "Aplicación editada correctamente";
+				window.history.back();
 			}
 		});
 	}
 }])
-.controller('CreateCtrl',['$scope', 'Oraciones', function($scope, Oraciones){
+.controller('CreateCtrl',['$scope', 'InventarioApp','IngenieroFact', '$location', function($scope, InventarioApp, IngenieroFact, $location){
 	$scope.settings = {
-		pageTitle: "Agregar Oracion",
-		action: "Crear"
+		pageTitle: "Agregar Aplicación",
+		action: "Crear",
+		edicion: false
 	}
+	
+	IngenieroFact.get(function(datosIng){
+		$scope.ingenieros = datosIng.ings;
+	});
+	
 
-	$scope.Oracion = {
-		categoria: "",
-		titulo: "",
-		oracion: ""
+	$scope.aplicacion = {
+		codigo_aplicacion: "",
+		nombre_aplicacion: "",
+		dba_id: "",
+		tec_id: "",
+		estado: ""
 	};
 
 	$scope.submit = function(){
 		
-		Oraciones.save($scope.Oracion).$promise.then(function(data){
+		InventarioApp.save($scope.aplicacion).$promise.then(function(data){
 			if (data.msg){
-				angular.copy({},$scope.Oracion);
-				$scope.settings.success = "Oracion guardada correctamente";
+				angular.copy({},$scope.aplicacion);
+				$scope.settings.success = "Aplicación guardada correctamente";
+				$location.path('homeApp');
 			}
 		});
 	}
 }])
-
-.factory('Oraciones',function($resource){
+.factory('InventarioApp',function($resource){
 	$_token = "{{ csrf_token() }}";
-	return $resource("http://127.0.0.1/rosario/index.php/oraciones/:id",{id: "@_id"},{
+	return $resource("http://"+IP_SERVIDOR+"/inventario/index.php/aplicaciones/:id",{id: "@_id"},{
 		update: {method: "PUT", params: {id: "@id", _token: $_token}}
 	})
 });

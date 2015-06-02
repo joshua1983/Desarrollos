@@ -26,7 +26,7 @@ return [
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'http://sofinv.unab.edu.co',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
 	|
 	*/
 
-	'key' => env('APP_KEY', 'SomeRandomString'),
+	'key' => env('APP_KEY', 'josue2015*.+-/*864%&)(/#"!%$iop"'),
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 

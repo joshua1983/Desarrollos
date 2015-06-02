@@ -1,3 +1,9 @@
+<script>
+    $(".nav li").on("click", function() {
+      $(".nav li").removeClass("active");
+      $(this).addClass("active");
+    });
+</script>
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
@@ -9,10 +15,16 @@
 			</button>
 		</div>
 
-		<div class="collapse navbar-collapse" id="navbar-brand-centered">
+		<div class="collapse navbar-collapse" id="navbar-brand-centered" ng-controller="LoginCtrl">
 			<ul class="nav navbar-nav">
-				<li><a href="#/home">Inicio</a> </li>
-				<li><a href="#/create">Nuevo</a> </li>
+				<li><a  href="#/homeApp">Aplicaciones</a> </li>
+				<li><a  href="#/createApp">Nueva aplicacion</a> </li>
+				<li><a  href="#/homeIng">Ingenieros</a> </li>
+				<li><a  href="#/homeFunc">Funcionales</a> </li>
+				<li><a  href="#/homeInf">Informes</a> </li>
+				<li><a  href="#/homeCap">Capacidades</a> </li>
+				<li ng-if="isAdmin()==false"><a  href="#/loginPop">Login</a> </li>
+				<li ng-if="isAdmin()"><a href="#" ng-click="salir()">Salir</a> </li>
 			</ul>
 		</div>
 	</div>

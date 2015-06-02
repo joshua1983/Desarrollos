@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
     Options +FollowSymLinks
     RewriteEngine On
-    RewriteBase /rosario
+    RewriteBase /
 </IfModule>
 
 <IfModule mod_rewrite.c>

@@ -12,9 +12,12 @@ class DatabaseSeeder extends Seeder {
 	 */
 	public function run()
 	{
-		Model::unguard();
-
-		// $this->call('UserTableSeeder');
+		Eloquent::unguard();
+		\App\Models\Usuario::create([
+			'username' => 'admin',
+			'email' => 'jbarrios@unab.edu.co',
+			'password' => Hash::make('123456')
+		]);
 	}
 
 }

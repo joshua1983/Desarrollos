@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="panel-body">
+		<label>Buscar: <input ng-model="textoBuscar"></label>
+		<ul class="list-group">
+			<li class="list-group-item" ng-repeat="app in InventarioApp | filter:textoBuscar">
+				<a href="#/editApp/{{app.id}}">{{app.codigo_aplicacion}} - {{app.nombre_aplicacion}}</a>
+				<div class="pull-right action-buttons">
+					<a href="#/editApp/{{app.id}}">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</a>
+					<a ng-if="isAdmin()" ng-click="remove(app.id)" class="trash">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				</div>
+				
+			</li>
+		</ul>
+	</div>
+</div>
