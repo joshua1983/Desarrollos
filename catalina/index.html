@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lectura</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" />
+</head>
+<script type="text/javascript">
+    var palabras;
+    var cont = 0;
+    var timeCont;
+    $(document).ready(() => {
+        var texto = $("#texto").html();
+        palabras = texto.trim().split(" ");
+    });
+
+
+    function iniciar(){
+        timeCont = setTimeout(function(){
+            leer();
+        }, 1000);
+    }
+
+    function leer(){
+        $("#palabra").html("");
+        $("#palabra").html(palabras[cont]);
+        cont = cont + 1;
+        if (cont < palabras.length){
+            iniciar();
+        }else{
+            detener();
+        }
+    }
+
+    function detener(){
+        clearTimeout(timeCont);
+    }
+</script>
+<body >
+    
+
+    <div class="container-fluid">
+        
+        <div class="row">
+            
+            <div class="col-md-6" align="center">
+                <input class="btn btn-success" type="button" value="Empezar" onclick="iniciar()">
+            </div>
+            <div class="col-md-6" align="center">
+                <input class="btn btn-success" type="button" value="Parar" onclick="detener()">
+            </div>
+
+        </div>
+<br><br>
+        <div class="row" class="jumbotron">
+            <div id="palabra" class="col-md-12 display-4"  align="center">
+                
+            </div>
+        </div>
+
+        <div class="row" style="display: none">
+            <div id="texto">
+                prueba de texto
+            </div>
+        </div>
+
+    </div>
+
+    
+
+    
+</body>
+</html>
